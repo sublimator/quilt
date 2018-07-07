@@ -20,10 +20,8 @@ package org.interledger.encoding.asn.framework;
  * =========================LICENSE_END==================================
  */
 
-import org.interledger.encoding.asn.codecs.AsnSequenceCodec;
-import org.interledger.encoding.asn.codecs.AsnUint8Codec;
-
 import org.hamcrest.MatcherAssert;
+import org.interledger.encoding.asn.codecs.AsnUint8Codec;
 import org.junit.Test;
 
 
