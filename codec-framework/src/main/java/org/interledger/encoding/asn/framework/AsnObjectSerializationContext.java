@@ -20,7 +20,7 @@ package org.interledger.encoding.asn.framework;
  * =========================LICENSE_END==================================
  */
 
-import org.interledger.encoding.asn.codecs.AsnObjectCodecBase;
+import org.interledger.encoding.asn.utils.Unchecked;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,6 +30,8 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+
+
 
 /**
  * A contextual object for serializing {@link AsnObjectCodec} using registered serializers.
@@ -77,12 +79,12 @@ public class AsnObjectSerializationContext {
    * @return this {@link AsnObjectSerializationContext} for further operations.
    * @throws IOException If anything goes wrong reading from the {@code buffer}.
    */
-  public AsnObjectSerializationContext read(final AsnObjectCodec instance,
+  public AsnObjectSerializationContext read(final AsnObjectCodec<?> instance,
                                             final InputStream inputStream)
       throws IOException {
     Objects.requireNonNull(instance);
     Objects.requireNonNull(inputStream);
-    getSerializer(instance).read(this, instance, inputStream);
+    getSerializer(instance).read(this, Unchecked.cast(instance), inputStream);
     return this;
   }
 
@@ -96,7 +98,7 @@ public class AsnObjectSerializationContext {
    * @param data     An instance of byte array that contains bytes in a certain encoding.
    * @return this {@link AsnObjectSerializationContext} for further operations.
    */
-  public AsnObjectSerializationContext read(final AsnObjectCodec instance, final byte[] data) {
+  public AsnObjectSerializationContext read(final AsnObjectCodec<?> instance, final byte[] data) {
     Objects.requireNonNull(instance);
     Objects.requireNonNull(data);
 
@@ -118,13 +120,13 @@ public class AsnObjectSerializationContext {
    * @return this {@link AsnObjectSerializationContext} for further operations.
    * @throws IOException If anything goes wrong while writing to the {@link OutputStream}
    */
-  public AsnObjectSerializationContext write(final AsnObjectCodec instance,
+  public AsnObjectSerializationContext write(final AsnObjectCodec<?> instance,
                                              final OutputStream outputStream)
       throws IOException {
     Objects.requireNonNull(instance);
     Objects.requireNonNull(outputStream);
 
-    getSerializer(instance).write(this, instance, outputStream);
+    getSerializer(instance).write(this, Unchecked.cast(instance), outputStream);
 
     return this;
   }
@@ -137,11 +139,11 @@ public class AsnObjectSerializationContext {
    *                     serialized.
    * @return The serialized object.
    */
-  public byte[] write(final AsnObjectCodec instance) {
+  public byte[] write(final AsnObjectCodec<?> instance) {
     Objects.requireNonNull(instance);
 
     try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-      getSerializer(instance).write(this, instance, baos);
+      getSerializer(instance).write(this, Unchecked.cast(instance), baos);
       return baos.toByteArray();
     } catch (IOException e) {
       throw new CodecException("Error encoding " + instance.getClass().getCanonicalName(), e);
@@ -155,7 +157,7 @@ public class AsnObjectSerializationContext {
    */
   <T extends AsnObjectCodec> AsnObjectSerializer<T> getSerializer(final T instance) {
 
-    AsnObjectSerializer<T> serializer = tryGetSerializerForCodec((Class<T>) instance.getClass());
+    AsnObjectSerializer<T> serializer = tryGetSerializerForCodec(Unchecked.cast(instance.getClass()));
 
     if (serializer == null) {
       throw new CodecException(
@@ -173,21 +175,21 @@ public class AsnObjectSerializationContext {
     AsnObjectSerializer<T> serializer;
 
     if (serializers.containsKey(type)) {
-      serializer = serializers.get(type);
+      serializer = Unchecked.cast(serializers.get(type));
       if (serializer != null) {
         return serializer;
       }
     }
 
     if (type.getSuperclass() != null) {
-      serializer = tryGetSerializerForCodec((Class<T>) type.getSuperclass());
+      serializer = tryGetSerializerForCodec(Unchecked.cast(type.getSuperclass()));
       if (serializer != null) {
         return serializer;
       }
     }
 
     for (Class<?> interfaceType : type.getInterfaces()) {
-      serializer = tryGetSerializerForCodec((Class<T>) interfaceType);
+      serializer = tryGetSerializerForCodec(Unchecked.cast(interfaceType));
       if (serializer != null) {
         return serializer;
       }

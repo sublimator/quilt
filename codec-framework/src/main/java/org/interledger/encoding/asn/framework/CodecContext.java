@@ -20,6 +20,8 @@ package org.interledger.encoding.asn.framework;
  * =========================LICENSE_END==================================
  */
 
+import org.interledger.encoding.asn.utils.Unchecked;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -86,7 +88,9 @@ public class CodecContext {
     Objects.requireNonNull(serializer);
 
     //Register the serializer
-    serializers.register((Class<U>) ((U) supplier.get()).getClass(), serializer);
+    U codec = Unchecked.cast(supplier.get());
+    Class<U> codecClass = Unchecked.cast(codec.getClass());
+    serializers.register(codecClass, serializer);
 
     //Register the mapping
     mappings.register(type, supplier);
@@ -119,8 +123,8 @@ public class CodecContext {
    * @throws IOException if there are errors writing to the stream.
    */
   public <T> void write(T instance, OutputStream outputStream) throws IOException {
-    AsnObjectCodec<T> asnObjectCodec = mappings.getAsnObjectForType((Class<T>) instance
-        .getClass());
+    AsnObjectCodec<T> asnObjectCodec = mappings.getAsnObjectForType(Unchecked.cast(instance
+        .getClass()));
     asnObjectCodec.encode(instance);
     serializers.write(asnObjectCodec, outputStream);
   }

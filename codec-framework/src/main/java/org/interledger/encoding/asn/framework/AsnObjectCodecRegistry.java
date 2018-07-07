@@ -20,9 +20,12 @@ package org.interledger.encoding.asn.framework;
  * =========================LICENSE_END==================================
  */
 
+import org.interledger.encoding.asn.utils.Unchecked;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * A registry of {@link Class} to {@link AsnObjectCodec} mappings that can provide a new instance of
@@ -83,21 +86,22 @@ public class AsnObjectCodecRegistry {
     AsnObjectCodec<T> codec;
 
     if (mappersByObjectType.containsKey(type)) {
-      codec = mappersByObjectType.get(type).get();
+
+      codec = Unchecked.cast(mappersByObjectType.get(type).get());
       if (codec != null) {
         return codec;
       }
     }
 
     if (type.getSuperclass() != null) {
-      codec = (AsnObjectCodec<T>) tryGetAsnObjectForType(type.getSuperclass());
+      codec = Unchecked.cast(tryGetAsnObjectForType(type.getSuperclass()));
       if (codec != null) {
         return codec;
       }
     }
 
     for (Class<?> interfaceType : type.getInterfaces()) {
-      codec = (AsnObjectCodec<T>) tryGetAsnObjectForType(interfaceType);
+      codec = Unchecked.cast(tryGetAsnObjectForType(interfaceType));
       if (codec != null) {
         return codec;
       }

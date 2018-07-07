@@ -21,6 +21,7 @@ package org.interledger.encoding.asn.codecs;
  */
 
 import org.interledger.encoding.asn.framework.AsnObjectCodec;
+import org.interledger.encoding.asn.utils.Unchecked;
 
 import java.util.Arrays;
 import java.util.List;
@@ -89,7 +90,7 @@ public abstract class AsnSequenceCodec<T> extends AsnObjectCodecBase<T> {
    * @return the decoded filed value
    */
   public final <U extends AsnObjectCodecBase<V>, V> V getValueAt(int index) {
-    return ((U) getCodecAt(index)).decode();
+    return Unchecked.<U>cast(getCodecAt(index)).decode();
   }
 
   /**
@@ -101,7 +102,7 @@ public abstract class AsnSequenceCodec<T> extends AsnObjectCodecBase<T> {
    * @param <V> the type of the value that will be encoded.
    */
   public final <U extends AsnObjectCodecBase<V>, V> void setValueAt(int index, V value) {
-    ((U) getCodecAt(index)).encode(value);
+    Unchecked.<U>cast(getCodecAt(index)).encode(value);
     this.onValueChangedEvent();
   }
 
