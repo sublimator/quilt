@@ -64,35 +64,36 @@ public class OerLengthPrefixCodecTest {
   public static Collection<Object[]> data() {
     return Arrays.asList(new Object[][] {
         // [input_value][num_octets_written][byte_values]
+
         // 0
         {0, BaseEncoding.base16().decode("00")},
         // 1
         {1, BaseEncoding.base16().decode("01")},
         // 2
         {2, BaseEncoding.base16().decode("02")},
-        // 3 (the last number that can be encoded in 1 overall octet)
+        // 3 (Last number that can be encoded in 1 overall octet)
         {127, BaseEncoding.base16().decode("7F")},
-        // 4 (the first number that can be encoded in 1 value octet)
+
+        // 4 (First number that can be encoded in 1 value octet)
         {128, BaseEncoding.base16().decode("8180")},
         // 5
         {129, BaseEncoding.base16().decode("8181")},
-        // 6 (the last number that can be encoded in 1 value octet)
+        // 6 (Uast number that can be encoded in 1 value octet)
         {255, BaseEncoding.base16().decode("81FF")},
-        // 7 (the first number that can be encoded in 2 value octets)
+
+        // 7 (First number that can be encoded in 2 value octets)
         {256, BaseEncoding.base16().decode("820100")},
         // 8 (Last number that can be encoded in 2 value octets).
         {65535, BaseEncoding.base16().decode("82FFFF")},
 
         // 9 (First number that can be encoded in 3 value octets).
         {65536, BaseEncoding.base16().decode("83010000")},
-
         // 10 (Last number that can be encoded in 3 value octets).
         {16777215, BaseEncoding.base16().decode("83FFFFFF")},
 
         // 11 (First number that can be encoded in 4 value octets).
         {16777216, BaseEncoding.base16().decode("8401000000")},
-
-        // 11 (First number that can be encoded in 4 value octets).
+        // 11 (Last number that can be encoded in 4 value octets).
         {Integer.MAX_VALUE, BaseEncoding.base16().decode("847FFFFFFF")},});
   }
 
