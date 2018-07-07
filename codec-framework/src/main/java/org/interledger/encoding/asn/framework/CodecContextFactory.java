@@ -53,7 +53,7 @@ public class CodecContextFactory {
   public static final String OCTET_ENCODING_RULES = "OER";
 
   /**
-   * Get the {@link CodecContext} loaded with neccessary codecs and serializers for the given
+   * Get the {@link CodecContext} loaded with necessary codecs and serializers for the given
    * encoding rules.
    *
    * @param encodingRules encoding rules to use for serialization
