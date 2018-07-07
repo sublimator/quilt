@@ -21,7 +21,7 @@ package org.interledger.encoding.asn.codecs;
  */
 
 /**
- * An ASN.1 codec for UInt32 objects that decodes them into {@link Long} values..
+ * An ASN.1 codec for UInt32 objects that decodes them into {@link Long} values.
  */
 public class AsnUint32Codec extends AsnOctetStringBasedObjectCodec<Long> {
 

@@ -24,7 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 
 /**
- * An ASN.1 codec for UInt64 objects that decodes them into {@link BigInteger} values..
+ * An ASN.1 codec for UInt64 objects that decodes them into {@link BigInteger} values.
  */
 public class AsnUint64Codec extends AsnOctetStringBasedObjectCodec<BigInteger> {
 
