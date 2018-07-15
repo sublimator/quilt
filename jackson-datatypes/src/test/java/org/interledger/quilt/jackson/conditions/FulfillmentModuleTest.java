@@ -108,9 +108,10 @@ public class FulfillmentModuleTest extends AbstractConditionModuleTest {
     assertThat(actualAddressContainer.getFulfillment(), is(FULFILLMENT));
   }
 
-  @Value.Immutable
+
   @JsonSerialize(as = ImmutableFulfillmentContainer.class)
   @JsonDeserialize(as = ImmutableFulfillmentContainer.class)
+  @Value.Immutable
   interface FulfillmentContainer {
 
     @JsonProperty("fulfillment")

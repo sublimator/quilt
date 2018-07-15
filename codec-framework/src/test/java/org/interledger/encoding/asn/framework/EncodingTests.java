@@ -21,7 +21,9 @@ package org.interledger.encoding.asn.framework;
  */
 
 import org.interledger.encoding.MyCustomObject;
+import org.interledger.encoding.NestedObject;
 import org.interledger.encoding.asn.AsnMyCustomObjectCodec;
+import org.interledger.encoding.asn.annotations.OerAnnotated;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,8 +39,20 @@ public class EncodingTests {
   private CodecContext context;
 
   private CodecContext customContext() {
+    return annotationContext();
+//    return manualContext();
+  }
+
+  private CodecContext manualContext() {
     return CodecContextFactory.getContext(CodecContextFactory.OCTET_ENCODING_RULES)
       .register(MyCustomObject.class, AsnMyCustomObjectCodec::new);
+  }
+
+  private CodecContext annotationContext() {
+    CodecContext context = CodecContextFactory.getContext(CodecContextFactory.OCTET_ENCODING_RULES);
+    OerAnnotated.registerImmutable(context, NestedObject.class);
+    OerAnnotated.registerImmutable(context, MyCustomObject.class);
+    return context;
   }
 
   @Before
@@ -47,13 +61,15 @@ public class EncodingTests {
   }
 
   private MyCustomObject roundTripChecked(MyCustomObject obj) throws IOException {
-    ByteArrayOutputStream baOs = new ByteArrayOutputStream();
-    context.write(obj, baOs);
-    byte[] dehydrated = baOs.toByteArray();
-
-    ByteArrayInputStream baIs = new ByteArrayInputStream(dehydrated);
-    MyCustomObject revived = context.read(MyCustomObject.class, baIs);
-    assertThat(revived, is(obj));
+    MyCustomObject revived = null;
+    for (int i = 0; i < 1e6f; i++) {
+      ByteArrayOutputStream baOs = new ByteArrayOutputStream();
+      context.write(obj, baOs);
+      byte[] dehydrated = baOs.toByteArray();
+      ByteArrayInputStream baIs = new ByteArrayInputStream(dehydrated);
+      revived = context.read(MyCustomObject.class, baIs);
+      assertThat(revived, is(obj));
+    }
 
     return revived;
   }
@@ -67,6 +83,7 @@ public class EncodingTests {
       .uint32Property(1234567L)
       .uint64Property(BigInteger.ZERO)
       .octetStringProperty()
+      .custom(NestedObject.builder().id(23L).code(5).name("niq").build())
       .fixedLengthOctetStringProperty(
         new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
           0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
@@ -89,7 +106,8 @@ public class EncodingTests {
         "0, 1, 2, 3, 4, 5, 6, 7, 8, 9, " +
         "0, 1, 2, 3, 4, 5, 6, 7, 8, 9, " +
         "0, 1, 2, 3, 4, 5, 6, 7, 8, 9, " +
-        "0, 1]}"));
+        "0, 1], " +
+        "custom=NestedObject{id=23, name=niq, code=5}}"));
 
   }
 
@@ -103,6 +121,7 @@ public class EncodingTests {
       .uint32Property(1234567L)
       .uint64Property(BigInteger.ZERO)
       .octetStringProperty(new byte[]{0, 1, 2, 4})
+      .custom(NestedObject.builder().id(23L).name("niq").code(5).build())
       .fixedLengthOctetStringProperty(
         new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
           0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
@@ -125,7 +144,18 @@ public class EncodingTests {
         "0, 1, 2, 3, 4, 5, 6, 7, 8, 9, " +
         "0, 1, 2, 3, 4, 5, 6, 7, 8, 9, " +
         "0, 1, 2, 3, 4, 5, 6, 7, 8, 9, " +
-        "0, 1]}"));
+        "0, 1], " +
+        "custom=NestedObject{id=23, name=niq, code=5}}"));
+  }
+
+  @Test
+  public void test3() throws Exception {
+    test1();
+  }
+
+  @Test
+  public void test4() throws Exception {
+    test1();
   }
 
 }

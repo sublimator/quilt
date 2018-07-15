@@ -114,6 +114,10 @@ public class CodecContext {
     return asnObjectCodec.decode();
   }
 
+  public <T> AsnObjectCodec<T> codecForType(Class<T> type) {
+    return mappings.getAsnObjectForType(type);
+  }
+
   /**
    * Encode the given object to it's ASN.1 form and then serialize to the given stream.
    *

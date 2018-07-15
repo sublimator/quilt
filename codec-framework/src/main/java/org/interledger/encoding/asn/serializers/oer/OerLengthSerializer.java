@@ -36,7 +36,7 @@ public class OerLengthSerializer  {
    * Read a length prefix from the stream.
    *
    * @param inputStream the stream to read from
-   * @return The lenght encoded in the length prefix
+   * @return The length encoded in the length prefix
    * @throws IOException if there is an error reading from the stream.
    */
   public static int readLength(final InputStream inputStream) throws IOException {
@@ -106,9 +106,9 @@ public class OerLengthSerializer  {
   }
 
   /**
-   * Write an OER lenght prefix to the stream.
+   * Write an OER length prefix to the stream.
    *
-   * @param length The lenght to encode and write to the stream.
+   * @param length The length to encode and write to the stream.
    * @param outputStream the stream to write to
    * @throws IOException if there is an error writing to the stream
    */
